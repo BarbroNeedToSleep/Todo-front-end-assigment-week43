@@ -28,10 +28,9 @@
             background-color: #e0e0e0;
         }
 
-        /*.navbar-brand {*/
-        /*    color: black;*/
-
-        /*}*/
+        form {
+            padding: 1rem;
+        }
         .navbar-brand {
             font-weight: 300;
             color: black;
@@ -59,6 +58,44 @@
                 <div class="col">
                     <label for="description" class="form-label mt-3">Description</label>
                     <textarea class="form-control" id="description" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label for="duedate" class="form-label mt-3">Due Date</label>
+                    <input type="datetime-local" class="form-control" id="duedate">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="sel1" class="form-label mt-3">Assign to Person (Optional)</label>
+                    <select class="form-select" id="sel1" name="sellist1">
+                        <option value="" selected disabled>-- Select Person (Optional) --</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 mt-3">
+                <div class="col">
+                <p class="mb-2 fw-semibold">Attachments</p>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="attachment">
+                    <button class="btn btn-outline-secondary" type="button">X</button>
+                </div>
+                </div>
+            </div>
+            <div class="row g-3 mt-4">
+            <div class="col">
+                <div class="border border-2 border-secondary-subtle rounded-1 p-3" style="min-height: 150px;">
+                </div>
+            </div>
+        </div>
+
+            <div class="row g-3 mt-3">
+                <div class="col text-end">
+                    <button type="button" class="btn btn-primary">+ Add Todo</button>
                 </div>
             </div>
         </form>
