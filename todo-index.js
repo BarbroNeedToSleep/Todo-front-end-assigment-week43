@@ -29,7 +29,6 @@ const attachmentError = document.getElementById("attachment-error");
 
 const todoList = document.getElementById("todo-list");
 
-
 let allAttachments = [];
 
 
@@ -113,15 +112,24 @@ form.addEventListener("submit", function (event) {
     const assignedPerson = personValue ? personValue : "Unassigned";
     const attachmentCount = allAttachments.length;
 
-
-
     const titleValid = validateInput(titleInput, titleError, "⚠️ Please enter a title");
     const descValid = validateInput(descInput, descError, "⚠️ Please enter a description");
     const dateValid = validateInput(dueDateInput, dateError, "⚠️ Please choose a due date");
 
-
     if (!titleValid || !descValid || !dateValid) {
         return; // stop if any field is invalid
+    }
+
+    const now = new Date();
+    const selectedDate = new Date(duedateValue);
+
+    if (selectedDate < now) {
+        dateError.textContent = "⚠️ Due date cannot be in the past.";
+        dueDateInput.classList.add("is-invalid");
+        return; // stop submission
+    } else {
+        dateError.textContent = "";
+        dueDateInput.classList.remove("is-invalid");
     }
 
     // If valid:
@@ -132,13 +140,11 @@ form.addEventListener("submit", function (event) {
         assignedPerson,
         `Attachments: ${attachmentCount}`);
 
-
     const todoItem = document.createElement("div");
     todoItem.className = "p-3 border border-1 border-secondary-subtle rounded-1 mb-2";
     todoItem.id = `todo-${Date.now()}`; // unique ID based on timestamp
 
-    todoItem.innerHTML = `
-  <div class="d-flex justify-content-between align-items-start">
+    todoItem.innerHTML =`<div class="d-flex justify-content-between align-items-start">
     <div>
       <h6 class="fw-semibold mb-1">${titleValue}</h6>
       <p class="text-muted mb-2">${descValue}</p>
@@ -180,11 +186,9 @@ form.addEventListener("submit", function (event) {
     }
     todoList.appendChild(todoItem);
 
-
     form.reset();
     allAttachments = [];
     updateAttachmentPreview();
-
 
 });
 
