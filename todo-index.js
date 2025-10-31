@@ -27,12 +27,14 @@ const clearAttachmentsBtn = document.getElementById("clear-attachments");
 const previewBox = document.getElementById("attachment-preview");
 const attachmentError = document.getElementById("attachment-error");
 
+const todoList = document.getElementById("todo-list");
 
-let allAttachments = []; // keep track of all selected files
 
-// 🪄 1. Define the function outside and above
+let allAttachments = [];
+
+
 function updateAttachmentPreview() {
-    previewBox.innerHTML = ""; // clear old previews
+    previewBox.innerHTML = "";
 
     if (allAttachments.length === 0) {
         previewBox.innerHTML = "<p class='text-muted'>No attachments selected.</p>";
@@ -55,12 +57,11 @@ function updateAttachmentPreview() {
         previewBox.appendChild(fileItem);
     });
 
-    // add delete button logic
     previewBox.querySelectorAll("button").forEach(btn => {
         btn.addEventListener("click", function () {
             const index = parseInt(this.dataset.index);
             allAttachments.splice(index, 1);
-            updateAttachmentPreview(); // refresh the preview
+            updateAttachmentPreview();
         });
     });
 }
@@ -86,7 +87,7 @@ attachmentInput.addEventListener("change", function () {
         }
     });
 
-    // show any warnings under the field
+    // show a warnings under the field
     if (errorMessages.length > 0) {
         attachmentError.textContent = "⚠️ " + errorMessages.join(" ");
     }
@@ -99,11 +100,9 @@ clearAttachmentsBtn.addEventListener("click", function () {
     attachmentInput.value = "";
     allAttachments = [];
     attachmentError.textContent = "";
-    updateAttachmentPreview(); // rebuild preview
+    updateAttachmentPreview();
 });
 
-
-// Listen for when the form is submitted
 form.addEventListener("submit", function (event) {
     event.preventDefault(); // Stop the page from refreshing
 
@@ -126,7 +125,6 @@ form.addEventListener("submit", function (event) {
     }
 
     // If valid:
-
     console.log("✅ User typed:",
         titleValue,
         descValue,
@@ -135,10 +133,74 @@ form.addEventListener("submit", function (event) {
         `Attachments: ${attachmentCount}`);
 
 
+    const todoItem = document.createElement("div");
+    todoItem.className = "p-3 border border-1 border-secondary-subtle rounded-1 mb-2";
+    todoItem.id = `todo-${Date.now()}`; // unique ID based on timestamp
+
+    todoItem.innerHTML = `
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h6 class="fw-semibold mb-1">${titleValue}</h6>
+      <p class="text-muted mb-2">${descValue}</p>
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <span class="text-muted">
+          <i class="bi bi-calendar3 me-1"></i> Due: ${duedateValue}
+        </span>
+        ${assignedPerson !== "Unassigned" ? `
+        <span class="badge bg-info text-dark d-flex align-items-center">
+          <i class="bi bi-person-fill me-1"></i> ${assignedPerson}
+        </span>` : ""}
+        ${attachmentCount > 0 ? `
+        <span class="badge bg-secondary d-flex align-items-center">
+          <i class="bi bi-paperclip me-1"></i> ${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}
+        </span>` : ""}
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-end gap-2">
+      <small class="text-muted">Created: ${new Date().toLocaleDateString()}</small>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-success p-1" style="width: 36px; height: 36px;" data-action="check">
+          <i class="bi bi-check-lg"></i>
+        </button>
+        <button type="button" class="btn btn-outline-primary p-1" style="width: 36px; height: 36px;" data-action="edit">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button type="button" class="btn btn-outline-danger p-1" style="width: 36px; height: 36px;" data-action="delete">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>`;
+
+
+    const exampleTodo = document.getElementById("example-todo");
+    if (exampleTodo) {
+        exampleTodo.classList.add("d-none"); // hides it with Bootstrap
+    }
+    todoList.appendChild(todoItem);
+
+
+    form.reset();
+    allAttachments = [];
+    updateAttachmentPreview();
 
 
 });
 
-// Find the container where todos will appear
-const todoListContainer = document.getElementById("todo-list");
+    todoList.addEventListener("click", function (event) {
+        if (event.target.closest("[data-action='delete']")) {
+            const todoCard = event.target.closest(".p-3");
+            todoCard.remove();
+
+            // check if there are any real todos left
+            const remainingTodos = todoList.querySelectorAll("[id^='todo-']");
+            if (remainingTodos.length === 0) {
+                const exampleTodo = document.getElementById("example-todo");
+                if (exampleTodo) exampleTodo.classList.remove("d-none");
+            }
+    }
+});
+
+
 
